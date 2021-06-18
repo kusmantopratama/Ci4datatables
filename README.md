@@ -174,7 +174,7 @@ $(function() {
     });
 ```
 
-you can see in column there is  **dtindex** where its column automatically generate by library for numbering of rows.
+you can see in column there is  **dtindex** where its column automatically generate by library for numbering of rows. where you use **dtindex** column you must set its column whit orderable: false searchable: false, same as method **addColumn()**.
 
 ## Documentation:
 

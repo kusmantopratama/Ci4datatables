@@ -16,22 +16,22 @@ Library to make server side Datatables on CodeIgniter 4 to be **more easy**
 ## Installation
 Installation is best done via Composer, you may use the following command:
 
-  > composer require irsyadulibad/codeigniter4-datatables
+  > composer require kusmantopratama/Ci4datatables
 
-This will add the latest release of **codeigniter4-datatables** as a module to your project.
+This will add the latest release of **Ci4datatables** as a module to your project.
 
 
 ### Manual Installation
 
-Should you choose not to use Composer to install, you can download this repo, extract and rename this folder to **codeigniter4-datatables**. 
-Then enable it by editing **app/Config/Autoload.php** and adding the **Irsyadulibad\DataTables**
+Should you choose not to use Composer to install, you can download this repo, extract and rename this folder to **Ci4datatables**. 
+Then enable it by editing **app/Config/Autoload.php** and adding the **Kusmantopratama\Ci4datatables**
 namespace to the **$psr4** array. For example, if you copied it into **app/Libraries**:
 ```php
     $psr4 = [
         'Config'      => APPPATH . 'Config',
         APP_NAMESPACE => APPPATH,
         'App'         => APPPATH,
-        'Irsyadulibad\DataTables'   => APPPATH .'Libraries/codeigniter4-datatables/src',
+        'Kusmantopratama\Ci4datatables'   => APPPATH .'Libraries/Ci4datatables/src',
     ];
 ```
 
@@ -42,124 +42,192 @@ This is an example code for using this library:
 ```php
 <?php namespace App\Controllers;
 
-use Irsyadulibad\DataTables\DataTables;
+use Kusmantopratama\Ci4datatables\DataTables;
 
 class Home extends BaseController
 {
-	public function json()
-	{
-		return DataTables::use('users')
-			->where(['role' => 'admin'])
-			->hideColumns(['password'])
-			->rawColumns(['bio'])
-			->make(true);
-	}
+	 public function dt()
+    {
+        $dt = new Datatables('siswa'); //siswa is a table name
+        return $dt->addColumn('action', function ($db) {
+            $id = $db['id'];
+            $btn = "<button class='btn btn-sm btn-warning' onclick='edit(\"$id\")' title='edit'><i class='fa fa-edit'></i></button> <button class='btn btn-sm btn-danger' onclick='del(\"$id\")' title='delete'><i class='fa fa-eraser'></i></button>";
+            return $btn;
+        })->draw();
+    }
 }
 ```
 
 * Javascript
-```javascript
-$('#table').DataTable({
-  processing: true,
-  serverSide: true,
-  ajax:{
-    url: 'http://localhost:8080/json'
-  },
-  columns: [
-	  {data: 'username', name: 'username'},
-	  {data: 'email', name: 'email'},
-	  {data: 'fullname', name: 'fullname'}
-	  {data: 'bio', name: 'bio'}
-  ]
-});
+using Post Method
+```javascript using Post Method
+
+var dTable;
+$(function() {
+        dTable = $('#tabel').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                type: 'post',
+                url: '<?= site_url('admin/siswa/dt') ?>',
+                data: function(d) {
+                    d.<?= csrf_token() ?> = token;
+                }
+            },
+            columns: [{
+                    data: 'id',
+                    name: 'id',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'dtindex',
+                    name: 'dtindex',
+                    orderable: false,
+                    searchable: false
+                }, {
+                    data: 'nis',
+                    name: 'nis',
+                    orderable: true
+                }, {
+                    data: 'nama',
+                    name: 'nama',
+                    orderable: true
+                }, {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false,
+                    class: 'text-center nowrap'
+                }
+            ],
+            order: [
+                ['0', 'desc']
+            ],
+
+            rowCallback: function(row, data) {
+                var checkbox = "<div class=\"custom-control custom-checkbox\"><input class=\"custom-control-input cb-child\" name=\"multiple\" type=\"checkbox\" id=\"checkid" + data.id + "\" value=\"" + data.id + "\"><label class=\"custom-control-label\" for=\"checkid" + data.id + "\">&nbsp;</label></div>";
+                $('td:eq(0)', row).html(checkbox);
+            }
+        });
+
+        dTable.on('xhr.dt', function(e, settings, json, xhr) {
+            token = json.<?= csrf_token() ?>;
+        });
+
+    });
 ```
 
+```javascript using Get Method
+
+var dTable;
+$(function() {
+        dTable = $('#tabel').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                type: 'get',
+                url: '<?= site_url('admin/siswa/dt') ?>'
+                
+            },
+            columns: [{
+                    data: 'id',
+                    name: 'id',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'dtindex',
+                    name: 'dtindex',
+                    orderable: false,
+                    searchable: false
+                }, {
+                    data: 'nis',
+                    name: 'nis',
+                    orderable: true
+                }, {
+                    data: 'nama',
+                    name: 'nama',
+                    orderable: true
+                }, {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false,
+                    class: 'text-center nowrap'
+                }
+            ],
+            order: [
+                ['0', 'desc']
+            ],
+
+            rowCallback: function(row, data) {
+                var checkbox = "<div class=\"custom-control custom-checkbox\"><input class=\"custom-control-input cb-child\" name=\"multiple\" type=\"checkbox\" id=\"checkid" + data.id + "\" value=\"" + data.id + "\"><label class=\"custom-control-label\" for=\"checkid" + data.id + "\">&nbsp;</label></div>";
+                $('td:eq(0)', row).html(checkbox);
+            }
+        });
+
+    });
+```
 
 ## Documentation:
 
-Now you can use this without instantiate class
+Now you can use with instantiate class with table as parameter
 ```php
-DataTables::use('table');
+ $dt = new Datatables('siswa'); 
 ```
 
-We did not use the POST method due to a problem with the CSRF
-```php
-$routes->get('datatables/json', 'Controller::method', ['as' => 'dt-json']);
-```
 
 * **Select Table**\
-	Select the table that you want to use
+	Or you can use Querybuilder for select table;
 ```php
-DataTables::use('table')
+$dt = new Datatables(); 
+$dt->from('siswa');
 ```
 
-* **Set Output**\
-	The default parameter is true, which is automatically return the JSON data. You can return the data's dump by passing the **false** param
-```php
-DataTables::use('table')
-	->make(false);
-```
-
-* **Select Fields**\
-	Select the sepicifics column in the table
-```php
-->select('username, password')
-```
-
-* **Where Clause**
-```php
-->where(['role' => 'user', 'active' => 1])
-```
-
-
-* **orWhere Clause**
-```php
-->orWhere(['role' => 'user', 'active' => 0])
-```
-
-* **Join Clause**
-```php
-// <table>, <condition>, <type>
-->join('address', 'users.id = address.uid', 'INNER JOIN')
-```
+* **Query Syntax referer form codeigniter query builder**\
+* **Select, where, join etc functionality**\
+	for query functionality, this library use query builder style from codeigniter 4 it self. you can visit https://codeigniter.com/user_guide/database/query_builder.html
+  for more information
 
 * **Add Column**\
-	Add custom column which is not in the table
+	Select the table that you want to use
+ Closure Style
 ```php
-// <name>, <callback>
-->addColumn('action', function($data) {
-	return '<a href="/edit/'.$data->id.'">edit</a>';
-})
+$dt->addColumn('action', function ($db) {
+                    $id = $db['kategori_id'];
+                    return "<button title='edit' class='btn btn-sm btn-warning' onclick='edit(\"$id\")'>
+                <i class='fa fa-edit'></i></button> 
+                <button class='btn btn-sm btn-danger' title='delete' onclick='del(\"$id\")'>
+                <i class='fa fa-eraser'></i></button>";
+                });
+```
+Or ignited datatables style
+```php
+$dt = new Datatables();
+->addColumn('Actions', "<button title='edit' class='btn btn-sm btn-warning' onclick='edit("$1")'>
+                <i class='fa fa-edit'></i></button> 
+                <button class='btn btn-sm btn-danger' title='delete' onclick='del("$1")'>
+                <i class='fa fa-eraser'></i></button>", 'id');
 ```
 
 * **Edit Column**\
+	Select the table that you want to use
+ Closure Style
 ```php
-// <name>, <callback>
-->editColumn('created_at', function($data) {
-	return format($data);
-})
+$dt->editColumn('data_date', function ($db) {
+                    return date('d, M Y', strtotime($db['data_date']));
+                });
 ```
-
-* **Raw Columns**\
-	By default, all of the data is escaped to prevent XSS. But if you want to unescape them, you can use this method
+Or ignited datatables style
 ```php
-->rawColumns(['bio'])
+$dt = new Datatables();
+->editColumn('data_date', date('d, M Y', strtotime('$1')), 'data_date');
 ```
-
-* **Hide Columns**\
-	Hide columns from JSON output
-```php
-->hideColumns(['password'])
-```
-
-### Notes:
-
-* For now, we don't use the POST method due to a problem with the CSRF
 
 <br />
 
 ## Author's Profile:
 
-Github: [https://github.com/irsyadulibad]\
-Website: [http://irsyadulibad.my.id]\
-Facebook: [https://facebook.com/irsyadulibad.dev]
+Github: [https://github.com/kusmantopratama]
+Facebook: [https://web.facebook.com/k.tamapratama/]

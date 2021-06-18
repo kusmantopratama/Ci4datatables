@@ -46,7 +46,7 @@ class Datatables
 
 	public function where(array $data)
 	{
-
+		
 		$this->builder->where($data);
 		foreach ($data as $field => $value) {
 			$this->whereFields[] = $field;
@@ -66,13 +66,13 @@ class Datatables
 
 	public function draw()
 	{
-		$keyword = esc($this->request->getPost('search')['value']);
+		$keyword = esc($this->request->getVar('search')['value']);
 		if (!is_null($keyword)) $this->getFiltering($keyword);
 		$this->getOrdering();
 		$result = $this->getResult();
 		$paging = $this->getPaging($keyword);
 		$this->data = json_encode([
-			'draw' => $this->request->getPost('draw'),
+			'draw' => $this->request->getVar('draw'),
 			'recordsTotal' => $paging['total'],
 			'recordsFiltered' => $paging['filtered'],
 			'data' => $result,
@@ -122,7 +122,7 @@ class Datatables
 
 	private function getFiltering($keyword)
 	{
-		$fields = $this->request->getPost('columns');
+		$fields = $this->request->getVar('columns');
 		$this->builder->groupStart();
 		for ($i = 0; $i < count($fields); $i++) {
 			$where = false;
@@ -147,9 +147,9 @@ class Datatables
 
 	private function getOrdering()
 	{
-		$orderField = esc($this->request->getPost('order')[0]['column']);
-		$orderAD = esc($this->request->getPost('order')[0]['dir']);
-		$orderColumn = esc($this->request->getPost('columns')[$orderField]['data']);
+		$orderField = esc($this->request->getVar('order')[0]['column']);
+		$orderAD = esc($this->request->getVar('order')[0]['dir']);
+		$orderColumn = esc($this->request->getVar('columns')[$orderField]['data']);
 		$this->builder->orderBy($orderColumn, $orderAD);
 	}
 
@@ -158,7 +158,7 @@ class Datatables
 		$this->getLimiting();
 		$data = $this->builder->get()->getResultArray();
 		$this->columns = $data;
-		$i = $this->request->getPost('start', FILTER_SANITIZE_NUMBER_INT);
+		$i = $this->request->getVar('start', FILTER_SANITIZE_NUMBER_INT);
 		$aaData = array();
 
 		foreach ($data as $row_key => $row_val) {
@@ -194,8 +194,8 @@ class Datatables
 
 	private function getLimiting()
 	{
-		$limit = $this->request->getPost('length', FILTER_SANITIZE_NUMBER_INT);
-		$start = $this->request->getPost('start', FILTER_SANITIZE_NUMBER_INT);
+		$limit = $this->request->getVar('length', FILTER_SANITIZE_NUMBER_INT);
+		$start = $this->request->getVar('start', FILTER_SANITIZE_NUMBER_INT);
 		$this->builder->limit($limit, $start);
 	}
 
@@ -256,7 +256,7 @@ class Datatables
 
 	private function check_cType()
 	{
-		$column = $this->request->getPost('columns');
+		$column = $this->request->getVar('columns');
 		if (is_numeric($column[0]['data']))
 			return FALSE;
 		else

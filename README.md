@@ -1,31 +1,32 @@
-
-
 # ci4-datatables
+
 Server Side Datatables Library for CodeIgniter 4 Framework
 **NOTE: This lib is under early development.**
 
 ## Description
+
 Library to make server side Datatables on CodeIgniter 4 to be **more easy**
 
-
 ## Requirements
-* Codeigniter 4.*
-* JQuery 3.*
-* JQuery Datatables
+
+- Codeigniter 4.\*
+- JQuery 3.\*
+- JQuery Datatables
 
 ## Installation
+
 Installation is best done via Composer, you may use the following command:
 
-  > composer require kusmantopratama/Ci4datatables
+> composer require kusmantopratama/Ci4datatables
 
 This will add the latest release of **Ci4datatables** as a module to your project.
 
-
 ### Manual Installation
 
-Should you choose not to use Composer to install, you can download this repo, extract and rename this folder to **Ci4datatables**. 
+Should you choose not to use Composer to install, you can download this repo, extract and rename this folder to **Ci4datatables**.
 Then enable it by editing **app/Config/Autoload.php** and adding the **Kusmantopratama\Ci4datatables**
 namespace to the **$psr4** array. For example, if you copied it into **app/Libraries**:
+
 ```php
     $psr4 = [
         'Config'      => APPPATH . 'Config',
@@ -35,10 +36,12 @@ namespace to the **$psr4** array. For example, if you copied it into **app/Libra
     ];
 ```
 
-
 ## Example:
+
 This is an example code for using this library:
-* PHP:
+
+- PHP:
+
 ```php
 <?php namespace App\Controllers;
 
@@ -58,10 +61,10 @@ class Home extends BaseController
 }
 ```
 
-* Javascript
-using Post Method
-```javascript using Post Method
+- Javascript
+  using Post Method
 
+```javascript using Post Method
 var dTable;
 $(function() {
         dTable = $('#tabel').DataTable({
@@ -117,6 +120,7 @@ $(function() {
 
     });
 ```
+using Get Method
 
 ```javascript using Get Method
 
@@ -128,7 +132,7 @@ $(function() {
             ajax: {
                 type: 'get',
                 url: '<?= site_url('admin/siswa/dt') ?>'
-                
+
             },
             columns: [{
                     data: 'id',
@@ -170,56 +174,65 @@ $(function() {
     });
 ```
 
+you can see in column there is dtindex where its column automatically generate by library for numbering of rows.
+
 ## Documentation:
 
 Now you can use with instantiate class with table as parameter
+
 ```php
- $dt = new Datatables('siswa'); 
+ $dt = new Datatables('siswa');
 ```
 
+- **Select Table**\
+  Or you can use Querybuilder for select table;
 
-* **Select Table**\
-	Or you can use Querybuilder for select table;
 ```php
-$dt = new Datatables(); 
+$dt = new Datatables();
 $dt->from('siswa');
 ```
 
-* **Query Syntax referer form codeigniter query builder**\
-* **Select, where, join etc functionality**\
-	for query functionality, this library use query builder style from codeigniter 4 it self. you can visit https://codeigniter.com/user_guide/database/query_builder.html
+- **Query Syntax referer form codeigniter query builder**\
+- **Select, where, join etc functionality**\
+  for query functionality, this library use query builder style from codeigniter 4 it self. you can visit https://codeigniter.com/user_guide/database/query_builder.html
   for more information
 
-* **Add Column**\
-	Select the table that you want to use
- Closure Style
+- **Add Column**\
+  Select the table that you want to use
+  Closure Style
+
 ```php
 $dt->addColumn('action', function ($db) {
                     $id = $db['kategori_id'];
                     return "<button title='edit' class='btn btn-sm btn-warning' onclick='edit(\"$id\")'>
-                <i class='fa fa-edit'></i></button> 
+                <i class='fa fa-edit'></i></button>
                 <button class='btn btn-sm btn-danger' title='delete' onclick='del(\"$id\")'>
                 <i class='fa fa-eraser'></i></button>";
                 });
 ```
+
 Or ignited datatables style
+
 ```php
 $dt = new Datatables();
 ->addColumn('Actions', "<button title='edit' class='btn btn-sm btn-warning' onclick='edit("$1")'>
-                <i class='fa fa-edit'></i></button> 
+                <i class='fa fa-edit'></i></button>
                 <button class='btn btn-sm btn-danger' title='delete' onclick='del("$1")'>
                 <i class='fa fa-eraser'></i></button>", 'id');
 ```
 
-* **Edit Column**\
-	Select the table that you want to use
- Closure Style
+- **Edit Column**\
+  Select the table that you want to use
+  Closure Style
+
 ```php
 $dt->editColumn('data_date', function ($db) {
                     return date('d, M Y', strtotime($db['data_date']));
                 });
 ```
+
 Or ignited datatables style
+
 ```php
 $dt = new Datatables();
 ->editColumn('data_date', date('d, M Y', strtotime('$1')), 'data_date');

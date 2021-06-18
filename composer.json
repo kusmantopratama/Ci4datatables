@@ -1,5 +1,5 @@
 {
-    "name": "Kusmantopratama/Ci4datatables",
+    "name": "kusmantopratama/ci4datatables",
     "type": "library",
     "description": "Simple Codeigniter 4 Library Serverside Datatables Inspired igniteddatatables and Laravel Yajra Datatables",
     "keywords": ["ci4", "codeigniter", "codeigntier 4", "ci 4", "datatables", "serverside", "serverside datatables"],

@@ -244,3 +244,10 @@ $dt = new Datatables();
 
 Github: [https://github.com/kusmantopratama]
 Facebook: [https://web.facebook.com/k.tamapratama/]
+
+## support Me on 
+[https://paypal.me/tama225?locale.x=en_US]
+
+
+## dukung saya di 
+[https://sociabuzz.com/tamapratama/support]

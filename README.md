@@ -198,8 +198,8 @@ $dt->from('siswa');
   for more information
 
 - **Add Column**\
-  Select the table that you want to use
-  Closure Style
+  if you want to use
+  Closure Style :
 
 ```php
 $dt->addColumn('action', function ($db) {
@@ -222,8 +222,8 @@ $dt = new Datatables();
 ```
 
 - **Edit Column**\
-  Select the table that you want to use
-  Closure Style
+ if you want to use
+  Closure Style :
 
 ```php
 $dt->editColumn('data_date', function ($db) {

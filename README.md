@@ -189,7 +189,7 @@ Now you can use with instantiate class with table as parameter
 
 ```php
 $dt = new Datatables();
-$dt->from('siswa');
+$dt->table('siswa');
 ```
 
 - **Query Syntax referer form codeigniter query builder**\
